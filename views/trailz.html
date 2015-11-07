@@ -1,0 +1,178 @@
+  <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta title="viewport" content="width=device-width, initial-scale=1">
+    <title>Trailz of NYC</title>
+
+    <!-- Custom Font - Change 'Muli' to the font you want -->
+    <link href='https://fonts.googleapis.com/css?family=Muli' rel='stylesheet' type='text/css'>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <!-- Custom CSS inside CSS folder -->
+    <link rel="stylesheet" href="css/style.css">
+
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+  <div id="map-canvas" hidden></div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <h1>Add a New Step to Your Trail</h1>
+        <form class="form-horizontal" id="addForm">
+          <div class="form-group">
+            <label for="title" class="col-sm-2 control-label">Title</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="title" placeholder="Title" title="title" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="text" class="col-sm-2 control-label">Text</label>
+            <div class="col-sm-10">
+              <textarea type="text" class="form-control" rows="3" id="text" placeholder="Text" title="text" required></textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="tags" class="col-sm-2 control-label">Tags</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="tags" placeholder="Tags (separated by comma)" title="tags" required>
+            </div>
+          </div> 
+          <div class="form-group">
+            <label for="note" class="col-sm-2 control-label">Note</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="note" placeholder="note" title="note" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="url" class="col-sm-2 control-label"> URL</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="url" placeholder="PhotoURL" title="url" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="location" class="col-sm-2 control-label">Location</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="location" placeholder="Location" title="location" required>
+            </div>
+          </div>                                                
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-default">Submit</button>
+            </div>
+          </div>
+        </form>        
+        
+      </div>
+      <div class="col-md-8" id="step-holder">
+        
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Edit a Step</h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal" id="editForm">
+            <div class="form-group">
+              <label for="title" class="col-sm-2 control-label">title</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="edit-title" placeholder="title" title="title" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="text" class="col-sm-2 control-label">text</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="edit-text" placeholder="text" title="text" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="tags" class="col-sm-2 control-label">Tags</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="edit-tags" placeholder="Tags (separated by comma)" title="tags" required>
+              </div>
+            </div> 
+            <div class="form-group">
+              <label for="note" class="col-sm-2 control-label">Note</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="edit-note" placeholder="note" title="note" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="url" class="col-sm-2 control-label">URL</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="edit-url" placeholder="URL" title="url" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="location" class="col-sm-2 control-label">Location</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="edit-location" placeholder="Location" title="location" required>
+              </div>
+            </div>
+            <div class="form-group hide">
+              <label for="id" class="col-sm-2 control-label">ID</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="edit-id" placeholder="id" title="edit-id" required>
+              </div>
+            </div>                                                            
+            <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default">Submit</button>
+              </div>
+            </div>
+          </form>     
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </body>
+
+    <!-- JQuery script -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyAcN6VtdpM55-CGGyEAWX2qEWs_Qwg4wXM"></script>    
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+
+    <!-- JQuery validate -->
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script>
+
+    <script type="text/javascript">
+      // $("form").validate({
+      //     rules: {
+      //       editWeight: {
+      //         required: true,
+      //         number: true // must be a number
+      //       },
+      //       weight: {
+      //         required: true,
+      //         number: true // must be a number
+      //       }
+      //     }
+      // }); 
+    </script>    
+
+    <!-- CUSTOM JS -->
+    <script src="js/main.js"></script>
+</html>

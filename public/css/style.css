@@ -1,0 +1,34 @@
+/**************/
+/* Custom CSS */
+/**************/
+
+body{
+	background-color: #f3f3f1;
+	color: #3f4953;
+}
+
+h1 {
+	color: #2ECC71;
+}
+
+.step {
+	min-height: 550px;
+}
+
+.step img {
+	width: 100%;
+}
+#text{
+	width: 100%;
+	
+}
+
+#step-holder{
+	margin-top: 75px;
+}
+
+/* IMPORTANT - must give map div height */
+#map-canvas { height:400px; }
+
+/* IMPORTANT - fixes webkit infoWindow rendering */
+#map-canvas img { max-width: none; }
