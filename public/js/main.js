@@ -1,18 +1,19 @@
 // CUSTOM JS FILE //
 var map; // global map variable
 var markers = []; // array to hold map markers
+var currentTrail;
 
 function init() {
   
   // set some default map details, initial center point, zoom and style
-  var mapOptions = {
-    center: new google.maps.LatLng(40.74649,-74.0094), // NYC
-    zoom: 10,
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-  };
+  // var mapOptions = {
+  //   center: new google.maps.LatLng(40.74649,-74.0094), // NYC
+  //   zoom: 10,
+  //   mapTypeId: google.maps.MapTypeId.ROADMAP
+  // };
   
-  // create the map and reference the div#map-canvas container
-  map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+  // // create the map and reference the div#map-canvas container
+  // map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
   
   // get the steps (ajax) 
   // and render them on the map
@@ -22,153 +23,206 @@ function init() {
 // add form button event
 // when the form is submitted (with a new animal), the below runs
 jQuery("#addTrail").submit(function(e){
-
+	console.log('submitting once');
 	// first, let's pull out all the values
 	// the name form field value
+	var trailTitle = jQuery("#trailTitle").val();
 	var title = jQuery("#title").val();
-	// var tags = jQuery("#tags").val();
-	// var url = jQuery("#url").val();
-	// var location = jQuery("#location").val();
+	var tags = jQuery("#tags").val();
+	var text = jQuery("#text").val();
+	var url = jQuery("#url").val();
+
 
 	// make sure we have a location
 	// if(!location || location=="") return alert('We need a location!');
       
-	// POST the data from above to our API create route
-  jQuery.ajax({
-  	url : '/api/create/trail',
-  	dataType : 'json',
-  	type : 'POST',
-  	// we send the data in a data object (with key/value pairs)
-  	data : {
+  	var data = {
+  		trailTitle: trailTitle,
   		title: title,
 		text: text,
-		note: note,
-		tags: tags,
 		url: url,
-		location: location
-  	},
-  	success : function(response){
-  		if(response.status=="OK"){
-	  		// success
-	  		console.log(response);
-	  		// re-render the map
-	  		renderPlaces();
-	  		// now, clear the input fields
-	  		jQuery("#addForm input").val('');
-  		}
-  		else {
-  			alert("something went wrong");
-  		}
-  	},
-  	error : function(err){
-  		// do error checking
-  		alert("something went wrong");
-  		console.error(err);
-  	}
-  }); 
+		tags: tags
+  	};
 
-	// prevents the form from submitting normally
-  e.preventDefault();
-  return false;
+  	console.log("Object to be created in the DB = " + JSON.stringify(data));
+
+
+
+	  // e.preventDefault();
+  	// return;
+	// POST the data from above to our API create route
+	  jQuery.ajax({
+
+	  	url : '/api/create/trail',
+	  	dataType : 'json',
+	  	type : 'POST',
+	  	// we send the data in a data object (with key/value pairs)
+	  	data : data,
+	  	success : function(response){
+	  		if(response.status=="OK"){
+		  		// success
+		  		console.log('create a trail please, but seriously you promised = '+response);
+		  		// re-render the map
+		  		renderPlaces();
+		  		// now, clear the input fields
+		  		jQuery("#addTrail input").val('');
+	  		}
+	  		else {
+	  			alert("something went wrong");
+	  		}
+	  	},
+	  	error : function(err){
+	  		// do error checking
+	  		alert("something went wrong");
+	  		console.error(err);
+	  	}
+	  }); 
+
+	  // prevents the form from submitting normally
+	  e.preventDefault();
+	  return false;
 });
 
 
-jQuery("#addForm").submit(function(e){
-
+// add form button event
+// when the form is submitted (with a new animal), the below runs
+jQuery("#addStep").submit(function(e){
+	console.log('addStep submitting once');
 	// first, let's pull out all the values
 	// the name form field value
-	var title = jQuery("#title").val();
-	var text = jQuery("#text").val();
-	var note = jQuery("#note").val();
-	var tags = jQuery("#tags").val();
-	var url = jQuery("#url").val();
-	var location = jQuery("#location").val();
+	var title = jQuery("#step-title").val();
+	var tags = jQuery("#step-tags").val();
+	var text = jQuery("#step-text").val();
+	var url = jQuery("#step-url").val();
 
-	// make sure we have a location
-	if(!location || location=="") return alert('We need a location!');
-      
-	// POST the data from above to our API create route
-  jQuery.ajax({
-  	url : '/api/create/',
-  	dataType : 'json',
-  	type : 'POST',
-  	// we send the data in a data object (with key/value pairs)
-  	data : {
+  	var data = {
   		title: title,
 		text: text,
-		note: note,
 		tags: tags,
 		url: url,
-		location: location
-  	},
-  	success : function(response){
-  		if(response.status=="OK"){
-	  		// success
-	  		console.log(response);
-	  		// re-render the map
-	  		renderPlaces();
-	  		// now, clear the input fields
-	  		jQuery("#addForm input").val('');
-  		}
-  		else {
-  			alert("something went wrong");
-  		}
-  	},
-  	error : function(err){
-  		// do error checking
-  		alert("something went wrong");
-  		console.error(err);
-  	}
-  }); 
+		trailId: currentTrail
+  	};
 
-	// prevents the form from submitting normally
-  e.preventDefault();
-  return false;
+  	console.log("Object to be created in the DB = " + JSON.stringify(data));
+
+	// POST the data from above to our API create route
+	  jQuery.ajax({
+
+	  	url : '/api/create/step',
+	  	dataType : 'json',
+	  	type : 'POST',
+	  	// we send the data in a data object (with key/value pairs)
+	  	data : data,
+	  	success : function(response){
+	  		if(response.status=="OK"){
+		  		// // success
+		  		// console.log('create a trail please, but seriously you promised = '+response);
+		  		// // re-render the map
+		  		// renderPlaces();
+		  		// now, clear the input fields
+		  		jQuery("#addStep input").val('');
+		  		jQuery("#addStep").hide();
+		  		renderPlaces();
+	  		}
+	  		else {
+	  			alert("something went wrong");
+	  		}
+	  	},
+	  	error : function(err){
+	  		// do error checking
+	  		alert("something went wrong");
+	  		console.error(err);
+	  	}
+	  }); 
+
+	  // prevents the form from submitting normally
+	  e.preventDefault();
+	  return false;
 });
 
-// get Animals JSON from /api/get
-// loop through and populate the map with markers
-var renderPlaces = function() {
+
+// jQuery("#addForm").submit(function(e){
+
+// 	// first, let's pull out all the values
+// 	// the name form field value
+
+
+	
+// 	var title = jQuery("#title").val();
+// 	var text = jQuery("#text").val();
+// 	var note = jQuery("#note").val();
+// 	var tags = jQuery("#tags").val();
+// 	var url = jQuery("#url").val();
+// 	var location = jQuery("#location").val();
+
+// 	// make sure we have a location
+// 	if(!location || location=="") return alert('We need a location!');
+      
+// 	// POST the data from above to our API create route
+//   jQuery.ajax({
+// 		url : '/api/create/',
+// 		dataType : 'json',
+// 		type : 'POST',
+// 		// we send the data in a data object (with key/value pairs)
+// 		data : {
+// 			// title: title,
+// 			text: text,
+// 			note: note,
+// 			tags: tags,
+// 			url: url,
+// 			location: location
+// 		},
+// 		success : function(response){
+// 			if(response.status=="OK"){
+// 	  		// success
+// 	  		console.log(response);
+// 	  		// re-render the map
+// 	  		renderPlaces();
+// 	  		// now, clear the input fields
+// 	  		jQuery("#addForm input").val('');
+// 			}
+// 			else {
+// 				alert("something went wrong");
+// 			}
+// 		},
+// 		error : function(err){
+// 			// do error checking
+// 			alert("something went wrong");
+// 				console.error(err);
+// 			}
+// 		}); 
+
+// 		// prevents the form from submitting normally
+// 		e.preventDefault();
+// 		return false;
+// 	});
+	
+	
+function renderPlaces() {
 	var infowindow =  new google.maps.InfoWindow({
 	    content: ''
 	});
-
+	console.log("render that shit");
 	jQuery.ajax({
-		url : '/api/get',
+		url : '/api/get/trail',
 		dataType : 'json',
 		success : function(response) {
-
-			console.log("ajax response"+response);
-			steps = response.step;
-			// first clear any existing markers, because we will re-add below
-			clearMarkers();
-			markers = [];
-			console.log("ajax response.steps"+response.step);
-			// now, loop through the steps and add them as markers to the map
-			for(var i = 0 ; i < steps.length; i++){
-
-				var latLng = {
-					lat: steps[i].location.geo[1], 
-					lng: steps[i].location.geo[0]
-				}
-
-				// make and place map maker.
-				var marker = new google.maps.Marker({
-				    map: map,
-				    position: latLng,
-				    title : steps[i].title + "<br>" + steps[i].text + "<br>" + steps[i].location.name
-				});
-
-				bindInfoWindow(marker, map, infowindow, '<b>'+steps[i].title + "</b> ("+steps[i].text+") <br>" + steps[i].location.name);
-				
-				// keep track of markers
-				markers.push(marker);
-			}
+			console.log(response);
+			console.log("ajax response but I want a response object :-( = " + response);
+			console.log("is response empty? " + jQuery.isEmptyObject({response}));	
+			var trail = response.trail;
+			console.log("ajax response.trail = "+ response.trail);
 			console.log("render away!");
 			// now, render the animal image/data
-			renderSteps(steps);
+			renderTrail(trail);
+			// renderSteps(trail);
 
-		}
+		},
+		error : function(err){
+  		// do error checking
+  		console.log("something went wrong");
+  		console.error(err);
+  		}
 	})
 };
 
@@ -233,12 +287,12 @@ jQuery("#editForm").submit(function(e){
 });
 
 // binds a map marker and infoWindow together on click
-var bindInfoWindow = function(marker, map, infowindow, html) {
-    google.maps.event.addListener(marker, 'click', function() {
-        infowindow.setContent(html);
-        infowindow.open(map, marker);
-    });
-}
+// var bindInfoWindow = function(marker, map, infowindow, html) {
+//     google.maps.event.addListener(marker, 'click', function() {
+//         infowindow.setContent(html);
+//         infowindow.open(map, marker);
+//     });
+// }
 
 function renderSteps(steps){
 
@@ -251,9 +305,9 @@ function renderSteps(steps){
 			'<img class="url" src="'+steps[i].url+'">'+
 			'<h1 class="title">'+steps[i].title+'</h1>'+
 			'<ul>'+
-				'<li>Location: <span class="location">'+steps[i].location.name+'</span></li>'+
+				// '<li>Location: <span class="location">'+steps[i].location.name+'</span></li>'+
 				'<li>Saved Text: <span class="text">'+steps[i].text+'</span></li>'+
-				'<li>Note: <span class="note">'+steps[i].note+'</span></li>'+
+				'<li>URL: <span class="note">'+steps[i].urk+'</span></li>'+
 				'<li>Tags: <span class="tags">'+steps[i].tags+'</span></li>'+
 				'<li class="hide id">'+steps[i]._id+'</li>'+
 			'</ul>'+
@@ -265,7 +319,39 @@ function renderSteps(steps){
 
 	}
 }
+function renderTrail(trails){
 
+	// first, make sure the #animal-holder is empty
+	jQuery('#trail-holder').empty();
+
+	// loop through all the steps and add them in the animal-holder div
+	for(var i=0;i<trails.length;i++){
+
+		var stepsInTrail = '';
+		for(var j=0;j<trails[i].steps.length;j++){
+			stepsInTrail += '<ul>'+
+				// '<li>Location: <span class="location">'+trails[i].location.name+'</span></li>'+
+				'<li>Step Title: <span class="text">'+trails[i].steps[j].title+'</span></li>'+
+				'<li>Saved Text: <span class="text">'+trails[i].steps[j].text+'</span></li>'+
+				'<li>URL: <span class="url">'+trails[i].steps[j].url+'</span></li>'+
+				'<li>Tags: <span class="tags">'+trails[i].steps[j].tags+'</span></li>'+
+				'<li class="hide id">'+trails[i].steps[j]._id+'</li>'+
+			'</ul>';
+		}
+
+		var htmlToAdd = '<div class="col-md-4 trail">'+
+			'<img class="url" src="'+trails[i].url+'">'+
+			'<h1 class="title">'+trails[i].title+'</h1>'+
+			stepsInTrail +
+			'<button type="button" id="'+trails[i]._id+'" onclick="addStep(event)">Add Step</button>'+
+			'<button type="button" id="'+trails[i]._id+'" onclick="deleteStep(event)">Delete Trail</button>'+
+			'<button type="button" data-toggle="modal" data-target="#editModal"">Edit Step</button>'+
+		'</div>';
+
+		jQuery('#trail-holder').prepend(htmlToAdd);
+
+	}
+}
 jQuery('#editModal').on('show.bs.modal', function (e) {
   // let's get access to what we just clicked on
   var clickedButton = e.relatedTarget;
@@ -293,14 +379,20 @@ jQuery('#editModal').on('show.bs.modal', function (e) {
 
 })
 
+function addStep(event){
+	console.log('the trail id to add a step to is ' + event.target.id);
+	currentTrail = event.target.id;
+	jQuery('#addStep').show();
+}
+
 
 function deleteStep(event){
 	var targetedId = event.target.id;
-	console.log('the step to delete is ' + targetedId);
+	console.log('the trail to delete is ' + targetedId);
 
 	// now, let's call the delete route with AJAX
 	jQuery.ajax({
-		url : '/api/delete/'+targetedId,
+		url : '/api/delete/trail/'+targetedId,
 		dataType : 'json',
 		success : function(response) {
 			// now, let's re-render the steps

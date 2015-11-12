@@ -40,5 +40,5 @@ var trailEntry = new Schema({
 })
 
 // export 'Animal' model so we can interact with it in other files
-// module.exports = mongoose.model('Trail',trailEntry);
-module.exports = mongoose.model('Step',stepSchema);
+module.exports = mongoose.model('Trail', trailEntry);
+// module.exports = mongoose.model('Step',stepSchema);
