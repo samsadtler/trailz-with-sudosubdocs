@@ -4,20 +4,7 @@ var markers = []; // array to hold map markers
 var currentTrail;
 
 function init() {
-  
-  // set some default map details, initial center point, zoom and style
-  // var mapOptions = {
-  //   center: new google.maps.LatLng(40.74649,-74.0094), // NYC
-  //   zoom: 10,
-  //   mapTypeId: google.maps.MapTypeId.ROADMAP
-  // };
-  
-  // // create the map and reference the div#map-canvas container
-  // map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-  
-  // get the steps (ajax) 
-  // and render them on the map
-  renderPlaces();
+  renderTrailMap();
 }
 
 // add form button event
@@ -63,7 +50,7 @@ jQuery("#addTrail").submit(function(e){
 		  		// success
 		  		console.log('create a trail please, but seriously you promised = '+response);
 		  		// re-render the map
-		  		renderPlaces();
+		  		renderTrailMap();
 		  		// now, clear the input fields
 		  		jQuery("#addTrail input").val('');
 	  		}
@@ -118,11 +105,12 @@ jQuery("#addStep").submit(function(e){
 		  		// // success
 		  		// console.log('create a trail please, but seriously you promised = '+response);
 		  		// // re-render the map
-		  		// renderPlaces();
+		  		// renderTrailMap();
 		  		// now, clear the input fields
 		  		jQuery("#addStep input").val('');
 		  		jQuery("#addStep").hide();
-		  		renderPlaces();
+		  		jQuery("#step-submit").hide();
+		  		renderTrailMap();
 	  		}
 	  		else {
 	  			alert("something went wrong");
@@ -177,7 +165,7 @@ jQuery("#addStep").submit(function(e){
 // 	  		// success
 // 	  		console.log(response);
 // 	  		// re-render the map
-// 	  		renderPlaces();
+// 	  		renderTrailMap();
 // 	  		// now, clear the input fields
 // 	  		jQuery("#addForm input").val('');
 // 			}
@@ -198,10 +186,7 @@ jQuery("#addStep").submit(function(e){
 // 	});
 	
 	
-function renderPlaces() {
-	var infowindow =  new google.maps.InfoWindow({
-	    content: ''
-	});
+function renderTrailMap() {
 	console.log("render that shit");
 	jQuery.ajax({
 		url : '/api/get/trail',
@@ -264,7 +249,7 @@ jQuery("#editForm").submit(function(e){
 	  		// success
 	  		console.log(response);
 	  		// re-render the map
-	  		renderPlaces();
+	  		renderTrailMap();
 	  		// now, close the modal
 	  		$('#editModal').modal('hide')
 	  		// now, clear the input fields
@@ -302,12 +287,11 @@ function renderSteps(steps){
 	// loop through all the steps and add them in the animal-holder div
 	for(var i=0;i<steps.length;i++){
 		var htmlToAdd = '<div class="col-md-4 step">'+
-			'<img class="url" src="'+steps[i].url+'">'+
 			'<h1 class="title">'+steps[i].title+'</h1>'+
 			'<ul>'+
 				// '<li>Location: <span class="location">'+steps[i].location.name+'</span></li>'+
 				'<li>Saved Text: <span class="text">'+steps[i].text+'</span></li>'+
-				'<li>URL: <span class="note">'+steps[i].urk+'</span></li>'+
+				'<li>URL: <span class="note">'+steps[i].url+'</span></li>'+
 				'<li>Tags: <span class="tags">'+steps[i].tags+'</span></li>'+
 				'<li class="hide id">'+steps[i]._id+'</li>'+
 			'</ul>'+
@@ -329,8 +313,8 @@ function renderTrail(trails){
 
 		var stepsInTrail = '';
 		for(var j=0;j<trails[i].steps.length;j++){
-			stepsInTrail += '<ul>'+
-				// '<li>Location: <span class="location">'+trails[i].location.name+'</span></li>'+
+			stepsInTrail += 
+			'<ul>'+
 				'<li>Step Title: <span class="text">'+trails[i].steps[j].title+'</span></li>'+
 				'<li>Saved Text: <span class="text">'+trails[i].steps[j].text+'</span></li>'+
 				'<li>URL: <span class="url">'+trails[i].steps[j].url+'</span></li>'+
@@ -340,7 +324,6 @@ function renderTrail(trails){
 		}
 
 		var htmlToAdd = '<div class="col-md-4 trail">'+
-			'<img class="url" src="'+trails[i].url+'">'+
 			'<h1 class="title">'+trails[i].title+'</h1>'+
 			stepsInTrail +
 			'<button type="button" id="'+trails[i]._id+'" onclick="addStep(event)">Add Step</button>'+
@@ -383,6 +366,7 @@ function addStep(event){
 	console.log('the trail id to add a step to is ' + event.target.id);
 	currentTrail = event.target.id;
 	jQuery('#addStep').show();
+	jQuery('#step-submit').show();
 }
 
 
@@ -397,7 +381,7 @@ function deleteStep(event){
 		success : function(response) {
 			// now, let's re-render the steps
 
-			renderPlaces();
+			renderTrailMap();
 
 		}
 	})
