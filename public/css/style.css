@@ -11,8 +11,13 @@ h1 {
 	color: #2ECC71;
 }
 
-.step {
-	min-height: 550px;
+li {
+	list-style-type: none;
+}
+
+.step-title {
+	font-size: 1.0em;
+	color: #3f4953;
 }
 
 .step img {

@@ -127,64 +127,6 @@ jQuery("#addStep").submit(function(e){
 	  e.preventDefault();
 	  return false;
 });
-
-
-// jQuery("#addForm").submit(function(e){
-
-// 	// first, let's pull out all the values
-// 	// the name form field value
-
-
-	
-// 	var title = jQuery("#title").val();
-// 	var text = jQuery("#text").val();
-// 	var note = jQuery("#note").val();
-// 	var tags = jQuery("#tags").val();
-// 	var url = jQuery("#url").val();
-// 	var location = jQuery("#location").val();
-
-// 	// make sure we have a location
-// 	if(!location || location=="") return alert('We need a location!');
-      
-// 	// POST the data from above to our API create route
-//   jQuery.ajax({
-// 		url : '/api/create/',
-// 		dataType : 'json',
-// 		type : 'POST',
-// 		// we send the data in a data object (with key/value pairs)
-// 		data : {
-// 			// title: title,
-// 			text: text,
-// 			note: note,
-// 			tags: tags,
-// 			url: url,
-// 			location: location
-// 		},
-// 		success : function(response){
-// 			if(response.status=="OK"){
-// 	  		// success
-// 	  		console.log(response);
-// 	  		// re-render the map
-// 	  		renderTrailMap();
-// 	  		// now, clear the input fields
-// 	  		jQuery("#addForm input").val('');
-// 			}
-// 			else {
-// 				alert("something went wrong");
-// 			}
-// 		},
-// 		error : function(err){
-// 			// do error checking
-// 			alert("something went wrong");
-// 				console.error(err);
-// 			}
-// 		}); 
-
-// 		// prevents the form from submitting normally
-// 		e.preventDefault();
-// 		return false;
-// 	});
-	
 	
 function renderTrailMap() {
 	console.log("render that shit");
@@ -271,14 +213,6 @@ jQuery("#editForm").submit(function(e){
   return false;
 });
 
-// binds a map marker and infoWindow together on click
-// var bindInfoWindow = function(marker, map, infowindow, html) {
-//     google.maps.event.addListener(marker, 'click', function() {
-//         infowindow.setContent(html);
-//         infowindow.open(map, marker);
-//     });
-// }
-
 function renderSteps(steps){
 
 	// first, make sure the #animal-holder is empty
@@ -289,7 +223,6 @@ function renderSteps(steps){
 		var htmlToAdd = '<div class="col-md-4 step">'+
 			'<h1 class="title">'+steps[i].title+'</h1>'+
 			'<ul>'+
-				// '<li>Location: <span class="location">'+steps[i].location.name+'</span></li>'+
 				'<li>Saved Text: <span class="text">'+steps[i].text+'</span></li>'+
 				'<li>URL: <span class="note">'+steps[i].url+'</span></li>'+
 				'<li>Tags: <span class="tags">'+steps[i].tags+'</span></li>'+
@@ -315,7 +248,7 @@ function renderTrail(trails){
 		for(var j=0;j<trails[i].steps.length;j++){
 			stepsInTrail += 
 			'<ul>'+
-				'<li>Step Title: <span class="text">'+trails[i].steps[j].title+'</span></li>'+
+				'<li><span class="step-title">'+trails[i].steps[j].title+'</span></li>'+
 				'<li>Saved Text: <span class="text">'+trails[i].steps[j].text+'</span></li>'+
 				'<li>URL: <span class="url">'+trails[i].steps[j].url+'</span></li>'+
 				'<li>Tags: <span class="tags">'+trails[i].steps[j].tags+'</span></li>'+
