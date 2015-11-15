@@ -1,4 +1,4 @@
-Demo for this app is available at: https://pets-of-nyc.herokuapp.com/pets
+Demo for this app is available at: https://sudosubdocs.herokuapp.com/add-trail
 
 ## Node.js / Express.js / MongoDb (+Mongoose) Boilerplate
 

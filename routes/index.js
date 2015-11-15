@@ -246,37 +246,14 @@ router.post('/api/update/trail/:id', function(req, res){
       dataToUpdate['tags'] = tags;
     }
 
-    if(req.body.location) {
-      location = req.body.location;
-    }
+    // if(req.body.location) {
+    //   location = req.body.location;
+    // }
 
     // if there is no location, return an error
-    if(!location) return res.json({status:'ERROR', message: 'You are missing a required field or have submitted a malformed request.'})
+    // if(!location) return res.json({status:'ERROR', message: 'You are missing a required field or have submitted a malformed request.'})
 
     // now, let's geocode the location
-    geocoder.geocode(location, function (err,data) {
-
-
-      // if we get an error, or don't have any results, respond back with error
-      if (!data || data==null || err || data.status == 'ZERO_RESULTS'){
-        var error = {status:'ERROR', message: 'Error finding location'};
-        return res.json({status:'ERROR', message: 'You are missing a required field or have submitted a malformed request.'})
-      }
-
-      // else, let's pull put the lat lon from the results
-      var lon = data.results[0].geometry.location.lng;
-      var lat = data.results[0].geometry.location.lat;
-
-      // now, let's add this to our step object from above
-      dataToUpdate['location'] = {
-        geo: [lon,lat], // need to put the geo co-ordinates in a lng-lat array for saving
-        name: data.results[0].formatted_address // the location name
-      }
-
-      console.log('the data to update is ' + JSON.stringify(dataToUpdate));
-
-      // now, update that step
-      // mongoose method findByIdAndUpdate, see http://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate  
       step.findByIdAndUpdate(requestedId, dataToUpdate, function(err,data){
         // if err saving, respond back with error
         if (err){
@@ -296,8 +273,32 @@ router.post('/api/update/trail/:id', function(req, res){
         return res.json(jsonData);
 
       })
+    // geocoder.geocode(location, function (err,data) {
 
-    });     
+
+    //   // if we get an error, or don't have any results, respond back with error
+    //   if (!data || data==null || err || data.status == 'ZERO_RESULTS'){
+    //     var error = {status:'ERROR', message: 'Error finding location'};
+    //     return res.json({status:'ERROR', message: 'You are missing a required field or have submitted a malformed request.'})
+    //   }
+
+    //   // else, let's pull put the lat lon from the results
+    //   var lon = data.results[0].geometry.location.lng;
+    //   var lat = data.results[0].geometry.location.lat;
+
+    //   // now, let's add this to our step object from above
+    //   dataToUpdate['location'] = {
+    //     geo: [lon,lat], // need to put the geo co-ordinates in a lng-lat array for saving
+    //     name: data.results[0].formatted_address // the location name
+    //   }
+
+    //   console.log('the data to update is ' + JSON.stringify(dataToUpdate));
+
+    //   // now, update that step
+    //   // mongoose method findByIdAndUpdate, see http://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate  
+    
+
+    // });     
 
 })
 

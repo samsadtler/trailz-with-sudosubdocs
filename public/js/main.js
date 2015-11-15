@@ -161,30 +161,26 @@ jQuery("#editForm").submit(function(e){
 	// the name form field value
 	var title = jQuery("#edit-title").val();
 	var text = jQuery("#edit-text").val();
-	var note = jQuery("#edit-note").val();
 	var tags = jQuery("#edit-tags").val();
 	var url = jQuery("#edit-url").val();
-	var location = jQuery("#edit-location").val();
 	var id = jQuery("#edit-id").val();
 
 	// make sure we have a location
-	if(!location || location=="") return alert('We need a location!');
+
      
   console.log(id);
       
 	// POST the data from above to our API create route
   jQuery.ajax({
-  	url : '/api/update/'+id,
+  	url : '/api/update/trail/'+id,
   	dataType : 'json',
   	type : 'POST',
   	// we send the data in a data object (with key/value pairs)
   	data : {
   		title: title,
 		text: text,
-		note: note,
 		tags: tags,
-		url: url,
-		location: location
+		url: url
   	},
   	success : function(response){
   		if(response.status=="OK"){
@@ -278,19 +274,19 @@ jQuery('#editModal').on('show.bs.modal', function (e) {
   // we do this by targeting specific spans within the parent and pulling out the text
   var title = $(parent).find('.title').text();
   var text = $(parent).find('.text').text();
-  var note = $(parent).find('.note').text();
+  // var note = $(parent).find('.note').text();
   var tags = $(parent).find('.tags').text();
   var url = $(parent).find('.url').attr('src');
-  var location = $(parent).find('.location').text();
+  // var location = $(parent).find('.location').text();
   var id = $(parent).find('.id').text();
 
   // now let's set the value of the edit fields to those values
  	jQuery("#edit-title").val(title);
 	jQuery("#edit-text").val(text);
-	jQuery("#edit-note").val(note);
+	// jQuery("#edit-note").val(note);
 	jQuery("#edit-tags").val(tags);
 	jQuery("#edit-url").val(url);
-	jQuery("#edit-location").val(location);
+	// jQuery("#edit-location").val(location);
 	jQuery("#edit-id").val(id);
 
 })
