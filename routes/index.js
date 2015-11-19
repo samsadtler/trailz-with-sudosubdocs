@@ -101,10 +101,10 @@ router.post('/api/create/step', function(req,res){
   console.log("the trail to add the step to is " + req.body.trailId);
 
   var trailId = req.body.trailId;
-
   var title = req.body.title;
   var text = req.body.text;
   var tags = req.body.tags.split(","); // split string into array
+  for(var i=0;i<tags.length;i++) tags[i] = tags[i].replace(/^\s+|\s+$/g,'');
   var url = req.body.url;
 
   var stepObj = {
