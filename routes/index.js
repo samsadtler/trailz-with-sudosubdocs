@@ -15,8 +15,8 @@ var Trail = require("../models/model.js");
 // router.get('/', function(req, res) {
   
 //   var jsonData = {
-//   	'name': 'trailz-of-nyc',
-//   	'api-status':'OK'
+//    'name': 'trailz-of-nyc',
+//    'api-status':'OK'
 //   }
 
 //   // respond with json data
@@ -332,5 +332,23 @@ router.get('/api/delete/trail/:id', function(req, res){
 
 })
 
-module.exports = router;
+// /api/search?tags=tag+1,tag+2,tag+3
+router.get('/api/search',function(req,res){
+  console.log(req.query.tags);
+  var tags = req.query.tags.split(',');
+  console.log(tags);
 
+  var searchQuery = {'steps.tags':{ $in: tags}}
+  Trail.find(searchQuery, function(err,data){
+    console.log(data);
+    res.json(data);
+  })
+
+})
+
+
+
+
+
+
+module.exports = router;
