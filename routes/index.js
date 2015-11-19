@@ -50,7 +50,7 @@ router.post('/api/create/trail', function(req,res){
       var text = req.body.text;
       var tags = req.body.tags.split(","); // split string into array
       console.log(tags);
-      for(var i=0;i<tags.length;i++) tags[i].replace(/^\s+|\s+$/g,''); 
+      for(var i=0;i<tags.length;i++) tags[i] = tags[i].replace(/^\s+|\s+$/g,'');
       console.log(tags);
       var url = req.body.url;
 
