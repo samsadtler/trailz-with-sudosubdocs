@@ -49,6 +49,7 @@ router.post('/api/create/trail', function(req,res){
       var title = req.body.title;
       var text = req.body.text;
       var tags = req.body.tags.split(","); // split string into array
+      for(var i=0;i<tags.length;i++) tags[i].replace(/ /g,'')
       var url = req.body.url;
 
       // hold all this data in an object
@@ -335,11 +336,17 @@ router.get('/api/delete/trail/:id', function(req, res){
 // /api/search?tags=tag+1,tag+2,tag+3
 router.get('/api/search',function(req,res){
   console.log(req.query.tags);
+
   var tags = req.query.tags.split(',');
+
   console.log(tags);
 
   var searchQuery = {'steps.tags':{ $in: tags}}
   Trail.find(searchQuery, function(err,data){
+    if(err || data == null){
+      var error = {status:'ERROR', message: 'Could not find that step to delete'};
+      return res.json(error);
+    }
     console.log(data);
     res.json(data);
   })
