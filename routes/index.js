@@ -93,66 +93,6 @@ router.post('/api/create/trail', function(req,res){
     })
 });
 
-// router.post('/api/add/bookmarks', function(req,res){
-//     var bookmarks = req.body.bookmarks;
-//     cosole.log("flatChildrenArray " + depthFirst(bookmarks, 0))
-
-//     function depthFirst(tree, depth){
-//         var newDepth = depth
-//         var branch = tree;
-//         console.log("enter the depths at " + depth);
-//         // check if input tree is has a url, 
-//         // if it isn't then it is likely a bookmark
-//         console.log(branch);
-//         if(branch.url !== undefined) {
-//             flatChildrenArray.push(branch)
-//             console.log("pushed " + JSON.stringify(branch) + "to array")
-//             console.log ("branch.url --> " + branch.url)
-//             return true
-//         } else {
-//             // console.log("wasn't worth pushing this shit " + JSON.stringify(tree))
-//             console.log("wasn't worth pushing this shit " + branch);
-//         }
-//         console.log("tree length " + branch.length);
-//         if (branch.length == undefined) {
-//             branch = tree.children
-//             console.log("children length " + branch.length);
-//         }
-//         for (var i = 0; i < branch.length; i++){
-//             console.log("step " + i)
-//             if (flatChildArrayCheck(branch[i], flatChildrenArray) == "emptyarray" || branch !== undefined){
-//                 var currentDepth = newDepth + 1;
-//                 // depthFirst(tree[i],currentDepth)
-//                  console.log("branch[i] " + branch[i]);
-//                 // jQuery.when(depthFirst(tree[Object.keys(tree)[i]], currentDepth)).then(arrayReturn())
-//                 jQuery.when(depthFirst(branch[i], currentDepth)).then(arrayReturn())
-//                 console.log("lets take it to the next level --> " + currentDepth);
-
-//             }
-//         }
-//             function arrayReturn(){    
-//                 // console.log ("tree[i] ------------------------------> " + JSON.stringify(tree[i]))
-//                 return flatChildrenArray
-//             }   
-//     }
-
-//     function flatChildArrayCheck(treeElement, arrayToCheck){
-//         console.log("check that array of flat children for redundancies")
-//         if (arrayToCheck.length == 0){
-//             console.log("emptyarray");
-//             return "emptyarray"
-//         }
-//         for (var i = 0; i < arrayToCheck.length; i++ ){
-//             if (arrayToCheck[i] == treeElement){
-//                 console.log("true");
-//                 return true;
-//             } else {
-//                 console.log("false");
-//                 return false;
-//             }   
-//         }
-//     }    
-// })
 
 router.post('/api/create/step', function(req,res){
 
