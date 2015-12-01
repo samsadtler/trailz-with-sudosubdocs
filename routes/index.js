@@ -4,7 +4,7 @@ var mongoose = require('mongoose'); // mongoDB library
 var geocoder = require('geocoder'); // geocoder library
 // our db model
 var Trail = require("../models/model.js");
-// var flatChildrenArray = [];
+var flatChildrenArray = [];
 /**
  * GET '/'
  * Default home route. Just relays a success message back.
