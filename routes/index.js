@@ -132,7 +132,11 @@ router.post('/api/add/bookmarks', function(req,res){
         }
             function arrayReturn(){    
                 // console.log ("tree[i] ------------------------------> " + JSON.stringify(tree[i]))
-                return res.flatChildrenArray
+                var jsonData = {
+                    status: 'OK',
+                    trail: flatChildrenArray
+                }
+                return res.jsonData
             }   
     }
 
