@@ -101,6 +101,7 @@ router.post('/api/add/bookmarks', function(req,res){
         var newDepth = depth
         var branch = tree;
         console.log("enter the depths at " + depth);
+        console.log("bookmarks --> "+bookmarks)
         // check if input tree is has a url, 
         // if it isn't then it is likely a bookmark
         console.log(branch);
