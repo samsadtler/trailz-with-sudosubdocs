@@ -95,8 +95,7 @@ router.post('/api/create/trail', function(req,res){
 
 router.post('/api/add/bookmarks', function(req,res){
     var bookmarks = req.body.bookmarks;
-    cosole.log("flatChildrenArray " + depthFirst(bookmarks, 0), function(){
-        return res.flatChildrenArray})
+    cosole.log("flatChildrenArray " + depthFirst(bookmarks, 0))
 
     function depthFirst(tree, depth){
         var newDepth = depth
@@ -133,7 +132,7 @@ router.post('/api/add/bookmarks', function(req,res){
         }
             function arrayReturn(){    
                 // console.log ("tree[i] ------------------------------> " + JSON.stringify(tree[i]))
-                return flatChildrenArray
+                return res.flatChildrenArray
             }   
     }
 
