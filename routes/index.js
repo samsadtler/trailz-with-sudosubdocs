@@ -96,9 +96,10 @@ router.post('/api/create/trail', function(req,res){
 router.post('/api/add/bookmarks', function(req,res){
     var bookmarks = req.body.tree;
     console.log("req.body -->"+ JSON.stringify(req.body.tree))
-    console.log("flatChildrenArray " + depthFirst(bookmarks, 0))
+    console.log("flatChildrenArray " + depthFirst(bookmarks, 0))    
+})
 
-    function depthFirst(tree, depth){
+function depthFirst(tree, depth){
         var newDepth = depth
         var branch = tree;
         console.log("enter the depths at " + depth);
@@ -157,8 +158,8 @@ router.post('/api/add/bookmarks', function(req,res){
                 return false;
             }   
         }
-    }    
-})
+    }
+
 
 router.post('/api/create/step', function(req,res){
 
