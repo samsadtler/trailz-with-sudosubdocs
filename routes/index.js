@@ -34,18 +34,19 @@ function convertBookmarks(array){
         objectForTrail.body.text = "place holder";
         objectForTrail.body.url = bookmarksArray[i].url;
         objectForTrail.body.tags = "place, holder";
-        createTrail(objectForTrail, res)
+        // createTrail(objectForTrail, res)
 
         // adding redundancy check for converting bookmarks
-        // var check = redundancyCheck(bookmarksArray[i].url, res)
+        var check = redundancyCheck(bookmarksArray[i].url, res)
 
-        // if (check.message == "no entry"){
-        //     console.log(check.message)
-        //     createTrail(objectForTrail, res)
-        // } else {
-        //     console.log(check.message)
-        //     continue
-        // }
+        if (check.message == "no entry"){
+            console.log(check.message)
+            createTrail(objectForTrail, res)
+        } else {
+            console.log('movealong')
+            console.log(check.message)
+            continue
+        }
 
     }
 }
