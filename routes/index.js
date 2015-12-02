@@ -22,6 +22,7 @@ router.post('/api/add/bookmarks', function(req,res){
 })
 
 function convertBookmarks(array){
+    console.log("convertBookmarks array -->" + array)
     var bookmarksArray = array
     var res = {message:"this fucked it up"}
     for (var i = 0; i < bookmarksArray.length; i++ ){
@@ -44,7 +45,8 @@ router.post('/api/create/trail', function(req,res){ createTrail(req,res) })
 function createTrail(req,res){
 
     console.log('Create a Trail');
-    console.log("What we're just trying to get data "+req.body);
+
+    console.log("What we're just trying to get data "+JSON.stringify(req.body));
     console.log("where my trail title? --> " + req.body.trailTitle)
 
     // pull out the information from the req.body
@@ -329,7 +331,7 @@ function depthFirst(tree, depth){
         } else {
             console.log("wasn't worth pushing this shit " + branch);
         }
-        console.log("tree length " + branch.length);
+        // console.log("tree length " + branch.length);
         if (branch.length == undefined) {
             branch = tree.children
             console.log("children length " + branch.length);
