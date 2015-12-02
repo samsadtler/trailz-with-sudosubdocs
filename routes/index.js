@@ -210,14 +210,6 @@ router.post('/api/update/trail/:id', function(req, res){
       dataToUpdate['tags'] = tags;
     }
 
-    // if(req.body.location) {
-    //   location = req.body.location;
-    // }
-
-    // if there is no location, return an error
-    // if(!location) return res.json({status:'ERROR', message: 'You are missing a required field or have submitted a malformed request.'})
-
-    // now, let's geocode the location
       step.findByIdAndUpdate(requestedId, dataToUpdate, function(err,data){
         // if err saving, respond back with error
         if (err){
@@ -237,32 +229,6 @@ router.post('/api/update/trail/:id', function(req, res){
         return res.json(jsonData);
 
       })
-    // geocoder.geocode(location, function (err,data) {
-
-
-    //   // if we get an error, or don't have any results, respond back with error
-    //   if (!data || data==null || err || data.status == 'ZERO_RESULTS'){
-    //     var error = {status:'ERROR', message: 'Error finding location'};
-    //     return res.json({status:'ERROR', message: 'You are missing a required field or have submitted a malformed request.'})
-    //   }
-
-    //   // else, let's pull put the lat lon from the results
-    //   var lon = data.results[0].geometry.location.lng;
-    //   var lat = data.results[0].geometry.location.lat;
-
-    //   // now, let's add this to our step object from above
-    //   dataToUpdate['location'] = {
-    //     geo: [lon,lat], // need to put the geo co-ordinates in a lng-lat array for saving
-    //     name: data.results[0].formatted_address // the location name
-    //   }
-
-    //   console.log('the data to update is ' + JSON.stringify(dataToUpdate));
-
-    //   // now, update that step
-    //   // mongoose method findByIdAndUpdate, see http://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate  
-    
-
-    // });     
 
 })
 
@@ -296,12 +262,39 @@ router.get('/api/delete/trail/:id', function(req, res){
 
 })
 
+// /api/check?url=URL+1,URL+2,URL+3
+// check to make sure a url and therefore and entry are not in our database
+router.get('/api/check',function(req,res){redundancyCheck(res, req)})
+
+function redundancyCheck(res, req){
+    var url = req.query.url
+    console.log("url to check ---> " + url)
+
+    var searchQuery = {'steps.url': url}
+    Trail.find(searchQuery, function(err,data){
+        if(err){
+          var error = {status:'ERROR', message: 'I fucked up'};
+          return res.json(error);
+        }
+
+        if(data.length == 0){
+            var noData = {status:'OK', message: 'no entry', data: data};
+            return res.json(noData);
+        }
+        console.log("Whos data is this? --> " + JSON.stringify(data));
+        var hasData = {
+            status:'OK', 
+            message: 'heres the data entry',
+            data: data
+        }
+
+        return res.json(hasData);
+    })
+}
 // /api/search?tags=tag+1,tag+2,tag+3
 router.get('/api/search',function(req,res){
     console.log(req.query.tags);
-
     var tags = req.query.tags.split(',');
-
     console.log(tags);
 
     var searchQuery = {'steps.tags':{ $in: tags}}
