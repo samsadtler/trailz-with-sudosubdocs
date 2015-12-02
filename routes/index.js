@@ -69,7 +69,7 @@ router.post('/api/create/trail', function(req,res){
 router.post('/api/add/bookmarks', function(req,res){
     var bookmarks = JSON.parse(req.body.tree);
     console.log("parsing bookmarks -->"+ bookmarks);
-    console.log("flatChildrenArray " + depthFirst(bookmarks, 0))   
+    console.log("flatChildrenArray " + return res.depthFirst(bookmarks, 0))   
 })
 
 function depthFirst(tree, depth){
@@ -112,7 +112,7 @@ function depthFirst(tree, depth){
             status: 'OK',
             trail: flatChildrenArray
         }
-        return res.jsonData  
+        return jsonData  
     }
 
     function flatChildArrayCheck(treeElement, arrayToCheck){
