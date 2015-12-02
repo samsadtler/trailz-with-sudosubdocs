@@ -34,18 +34,18 @@ function convertBookmarks(array){
         objectForTrail.body.text = "place holder";
         objectForTrail.body.url = bookmarksArray[i].url;
         objectForTrail.body.tags = "place, holder";
-
+        createTrail(objectForTrail, res)
 
         // adding redundancy check for converting bookmarks
-        var check = redundancyCheck(bookmarksArray[i].url, res)
+        // var check = redundancyCheck(bookmarksArray[i].url, res)
 
-        if (check.message == "no entry"){
-            console.log(check.message)
-            createTrail(objectForTrail, res)
-        } else {
-            console.log(check.message)
-            continue
-        }
+        // if (check.message == "no entry"){
+        //     console.log(check.message)
+        //     createTrail(objectForTrail, res)
+        // } else {
+        //     console.log(check.message)
+        //     continue
+        // }
 
     }
 }
@@ -356,17 +356,17 @@ function depthFirst(tree, depth){
     }
 // used exclusively in depth first search, but is essential
 function flatChildArrayCheck(treeElement, arrayToCheck){
-    console.log("check that array of flat children for redundancies")
+    // console.log("check that array of flat children for redundancies")
     if (arrayToCheck.length == 0){
-        console.log("emptyarray");
+        // console.log("emptyarray");
         return "emptyarray"
     }
     for (var i = 0; i < arrayToCheck.length; i++ ){
         if (arrayToCheck[i] == treeElement){
-            console.log("true");
+            // console.log("true");
             return true;
         } else {
-            console.log("false");
+            // console.log("false");
             return false;
         }   
     }
