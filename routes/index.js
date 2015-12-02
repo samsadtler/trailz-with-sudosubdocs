@@ -5,33 +5,6 @@ var geocoder = require('geocoder'); // geocoder library
 // our db model
 var Trail = require("../models/model.js");
 var flatChildrenArray = [];
-/**
- * GET '/'
- * Default home route. Just relays a success message back.
- * @param  {Object} req
- * @return {Object} json
- */
-// router.get('/', function(req, res) {
-  
-//   var jsonData = {
-//    'name': 'trailz-of-nyc',
-//    'api-status':'OK'
-//   }
-
-//   // respond with json data
-//   res.json(jsonData)
-// });
-
-// simple route to show the pets html
-
-/**
- * POST '/api/create'
- * Receives a POST request of the new user and location, saves to db, responds back
- * @param  {Object} req. An object containing the different attributes of the Person
- * @return {Object} JSON
- */
-
-
 
 router.get('/add-trail', function(req,res){
   res.render('add-trail.html');
@@ -126,21 +99,20 @@ function depthFirst(tree, depth){
             if (flatChildArrayCheck(branch[i], flatChildrenArray) == "emptyarray" || branch !== undefined){
                 var currentDepth = newDepth + 1;
                 // depthFirst(tree[i],currentDepth)
-                 console.log("branch[i] " + branch[i]);
-                // jQuery.when(depthFirst(tree[Object.keys(tree)[i]], currentDepth)).then(arrayReturn())
-                jQuery.when(depthFirst(branch[i], currentDepth)).then(arrayReturn())
+                 console.log("branch"+[i] +": "+ branch[i]);
+                // jQuery.when(depthFirst(branch[i], currentDepth)).then(arrayReturn())
+                depthFirst(branch[i], currentDepth)
                 console.log("lets take it to the next level --> " + currentDepth);
 
             }
         }
-            function arrayReturn(){    
+               
                 // console.log ("tree[i] ------------------------------> " + JSON.stringify(tree[i]))
-                var jsonData = {
-                    status: 'OK',
-                    trail: flatChildrenArray
-                }
-                return res.jsonData
-            }   
+        var jsonData = {
+            status: 'OK',
+            trail: flatChildrenArray
+        }
+        return res.jsonData  
     }
 
     function flatChildArrayCheck(treeElement, arrayToCheck){
