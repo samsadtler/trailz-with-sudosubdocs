@@ -95,7 +95,7 @@ router.post('/api/create/trail', function(req,res){
 
 router.post('/api/add/bookmarks', function(req,res){
     var bookmarks = JSON.parse(req.body.tree);
-    console.log("req.body.tree -->"+ JSON.stringify(req.body.tree));
+    console.log("parsing bookmarks -->"+ bookmarks);
     console.log("flatChildrenArray " + depthFirst(bookmarks, 0))   
 })
 
