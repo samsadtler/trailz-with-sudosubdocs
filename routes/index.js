@@ -10,43 +10,74 @@ router.get('/add-trail', function(req,res){
   res.render('add-trail.html');
 })
 
-router.post('/api/create/trail', function(req,res){
+router.post('/api/add/bookmarks', function(req,res){
+    var bookmarks = JSON.parse(req.body.tree);
+    console.log("parsing bookmarks -->"+ bookmarks);
+    // console.log("flatChildrenArray " + depthFirst(bookmarks, 0))
+    var jsonData = depthFirst(bookmarks, 0)
+    // console.log ("jsonData ----> returned " + jsonData)
+    convertBookmarks(flatChildrenArray);
+    return res.json(jsonData);
 
-  console.log('Create a Trail');
-  console.log("What we're just trying to get data "+req.body);
-  console.log("where my trail title? --> " + req.body.trailTitle)
+})
 
-      // pull out the information from the req.body
-      var trailTitle = req.body.trailTitle;
-      var title = req.body.title;
-      var text = req.body.text;
-      var tags = req.body.tags.split(","); // split string into array
-      console.log(tags);
-      for(var i=0;i<tags.length;i++) tags[i] = tags[i].replace(/^\s+|\s+$/g,'');
-      console.log(tags);
-      var url = req.body.url;
+function convertBookmarks(array){
+    var bookmarksArray = array
+    var res = {message:"this fucked it up"}
+    for (var i = 0; i < bookmarksArray.length; i++ ){
+        var objectForTrail = {
+                body : {}
+        }
+        objectForTrail.body.trailTitle = bookmarksArray[i].title;
+        objectForTrail.body.title = bookmarksArray[i].title;
+        objectForTrail.body.url = bookmarksArray[i].url;
+        objectForTrail.body.text = "place holder";
+        objectForTrail.body.tags = ["place", "holder"];
+        createTrail(objectForTrail, res)
+    }
+}
 
-      // hold all this data in an object
-      // this object should be structured the same way as your db model
 
-      var stepObj = {
-        title: title,
-        text: text,
-        tags: tags,
-        url: url,
-      };
-      var trailObj = {
-        title: trailTitle,
-        steps: [stepObj],
-      };
 
-      // now, let's save it to the database
-      // create a new step model instance, passing in the object we've created
-      var trail = new Trail(trailObj);
+router.post('/api/create/trail', function(req,res){ createTrail(req,res) })
 
-      // now, save that step instance to the database
-      // mongoose method, see http://mongoosejs.com/docs/api.html#model_Model-save    
-      trail.save(function(err,data){
+function createTrail(req,res){
+
+    console.log('Create a Trail');
+    console.log("What we're just trying to get data "+req.body);
+    console.log("where my trail title? --> " + req.body.trailTitle)
+
+    // pull out the information from the req.body
+    var trailTitle = req.body.trailTitle;
+    var title = req.body.title;
+    var text = req.body.text;
+    var tags = req.body.tags.split(","); // split string into array
+    console.log(tags);
+    for(var i=0;i<tags.length;i++) tags[i] = tags[i].replace(/^\s+|\s+$/g,'');
+    console.log(tags);
+    var url = req.body.url;
+
+    // hold all this data in an object
+    // this object should be structured the same way as your db model
+
+    var stepObj = {
+    title: title,
+    text: text,
+    tags: tags,
+    url: url,
+    };
+    var trailObj = {
+    title: trailTitle,
+    steps: [stepObj],
+    };
+
+    // now, let's save it to the database
+    // create a new step model instance, passing in the object we've created
+    var trail = new Trail(trailObj);
+
+    // now, save that step instance to the database
+    // mongoose method, see http://mongoosejs.com/docs/api.html#model_Model-save    
+    trail.save(function(err,data){
         // if err saving, respond back with error
         if (err){
           var error = {status:'ERROR', message: 'Error saving step'};
@@ -64,83 +95,11 @@ router.post('/api/create/trail', function(req,res){
 
         return res.json(jsonData);
     })
-});
-
-router.post('/api/add/bookmarks', function(req,res){
-    var bookmarks = JSON.parse(req.body.tree);
-    console.log("parsing bookmarks -->"+ bookmarks);
-    // console.log("flatChildrenArray " + depthFirst(bookmarks, 0))
-    var jsonData = depthFirst(bookmarks, 0)
-    console.log ("jsonData ----> returned " + jsonData)
-    return res.json(jsonData);
-
-})
-
-function depthFirst(tree, depth){
-        var newDepth = depth
-        var branch = tree;
-        console.log("enter the depths at " + depth);
-        console.log("bookmarks --> "+ branch)
-        // check if input tree is has a url, 
-        // if it isn't then it is likely a bookmark
-        console.log(branch);
-        if(branch.url !== undefined) {
-            flatChildrenArray.push(branch)
-            console.log("pushed " + JSON.stringify(branch) + "to array")
-            console.log ("branch.url --> " + branch.url)
-            return true
-        } else {
-            // console.log("wasn't worth pushing this shit " + JSON.stringify(tree))
-            console.log("wasn't worth pushing this shit " + branch);
-        }
-        console.log("tree length " + branch.length);
-        if (branch.length == undefined) {
-            branch = tree.children
-            console.log("children length " + branch.length);
-        }
-        for (var i = 0; i < branch.length; i++){
-            console.log("step " + i)
-            if (flatChildArrayCheck(branch[i], flatChildrenArray) == "emptyarray" || branch !== undefined){
-                var currentDepth = newDepth + 1;
-                // depthFirst(tree[i],currentDepth)
-                 console.log("branch"+[i] +": "+ branch[i]);
-                // jQuery.when(depthFirst(branch[i], currentDepth)).then(arrayReturn())
-                depthFirst(branch[i], currentDepth)
-                console.log("lets take it to the next level --> " + currentDepth);
-
-            }
-        }
-               
-                // console.log ("tree[i] ------------------------------> " + JSON.stringify(tree[i]))
-        var jsonData = {
-            status: 'OK',
-            trail: flatChildrenArray
-        }
-        return jsonData  
-    }
-
-    function flatChildArrayCheck(treeElement, arrayToCheck){
-        console.log("check that array of flat children for redundancies")
-        if (arrayToCheck.length == 0){
-            console.log("emptyarray");
-            return "emptyarray"
-        }
-        for (var i = 0; i < arrayToCheck.length; i++ ){
-            if (arrayToCheck[i] == treeElement){
-                console.log("true");
-                return true;
-            } else {
-                console.log("false");
-                return false;
-            }   
-        }
-    }
-
+};
 
 router.post('/api/create/step', function(req,res){
-
   console.log(req.body);
-
+  
   console.log("the trail to add the step to is " + req.body.trailId);
 
   var trailId = req.body.trailId;
@@ -337,22 +296,73 @@ router.get('/api/delete/trail/:id', function(req, res){
 
 // /api/search?tags=tag+1,tag+2,tag+3
 router.get('/api/search',function(req,res){
-  console.log(req.query.tags);
+    console.log(req.query.tags);
 
-  var tags = req.query.tags.split(',');
+    var tags = req.query.tags.split(',');
 
-  console.log(tags);
+    console.log(tags);
 
-  var searchQuery = {'steps.tags':{ $in: tags}}
-  Trail.find(searchQuery, function(err,data){
-    if(err || data == null){
-      var error = {status:'ERROR', message: 'Could not find that step to delete'};
-      return res.json(error);
+    var searchQuery = {'steps.tags':{ $in: tags}}
+    Trail.find(searchQuery, function(err,data){
+        if(err || data == null){
+          var error = {status:'ERROR', message: 'Could not find that step to delete'};
+          return res.json(error);
     }
-    console.log(data);
-    res.json(data);
-  })
+        console.log(data);
+        res.json(data);
+    })
 })
 
+function depthFirst(tree, depth){
+        var newDepth = depth
+        var branch = tree;
+        console.log("enter the depths at " + depth);
+        // console.log("bookmarks --> "+ branch)
+        // check if input tree is has a url, 
+        // if it does then it is likely a bookmark
+        console.log(branch);
+        if(branch.url !== undefined) {
+            flatChildrenArray.push(branch)
+            console.log("pushed " + JSON.stringify(branch) + "to array")
+            console.log ("branch.url --> " + branch.url)
+            return true
+        } else {
+            console.log("wasn't worth pushing this shit " + branch);
+        }
+        console.log("tree length " + branch.length);
+        if (branch.length == undefined) {
+            branch = tree.children
+            console.log("children length " + branch.length);
+        }
+        for (var i = 0; i < branch.length; i++){
+            console.log("step " + i)
+            if (flatChildArrayCheck(branch[i], flatChildrenArray) == "emptyarray" || branch !== undefined){
+                var currentDepth = newDepth + 1;
+                console.log("branch"+[i] +": "+ branch[i]);
+                depthFirst(branch[i], currentDepth)
+            }
+        }
+        var jsonData = {
+            status: 'OK',
+            trail: flatChildrenArray
+        }
+        return jsonData  
+    }
 
+function flatChildArrayCheck(treeElement, arrayToCheck){
+    console.log("check that array of flat children for redundancies")
+    if (arrayToCheck.length == 0){
+        console.log("emptyarray");
+        return "emptyarray"
+    }
+    for (var i = 0; i < arrayToCheck.length; i++ ){
+        if (arrayToCheck[i] == treeElement){
+            console.log("true");
+            return true;
+        } else {
+            console.log("false");
+            return false;
+        }   
+    }
+}
 module.exports = router;
