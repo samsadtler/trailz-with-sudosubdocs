@@ -71,6 +71,7 @@ router.post('/api/add/bookmarks', function(req,res){
     console.log("parsing bookmarks -->"+ bookmarks);
     // console.log("flatChildrenArray " + depthFirst(bookmarks, 0))
     var jsonData = depthFirst(bookmarks, 0)
+    console.log ("jsonData ----> returned " + jsonData)
     return res.jsonData
 
 })
