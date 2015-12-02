@@ -16,15 +16,15 @@ router.post('/api/add/bookmarks', function(req,res){
     // console.log("flatChildrenArray " + depthFirst(bookmarks, 0))
     var jsonData = depthFirst(bookmarks, 0)
     // console.log ("jsonData ----> returned " + jsonData)
-    convertBookmarks(flatChildrenArray,res);
+    convertBookmarks(flatChildrenArray);
     return res.json(jsonData);
 
 })
 
-function convertBookmarks(array, res){
+function convertBookmarks(array){
     console.log("convertBookmarks array -->" + array)
     var bookmarksArray = array
-    // var res = {err:"this fucked it up"}
+    var res = {message:"this fucked it up"}
     for (var i = 0; i < bookmarksArray.length; i++ ){
         var objectForTrail = {
                 body : {}
@@ -34,7 +34,7 @@ function convertBookmarks(array, res){
         objectForTrail.body.text = "place holder";
         objectForTrail.body.url = bookmarksArray[i].url;
         objectForTrail.body.tags = "place, holder";
-        console.log(createTrail(objectForTrail, res))
+        createTrail(objectForTrail, res)
     }
 }
 
