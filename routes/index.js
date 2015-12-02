@@ -34,10 +34,21 @@ function convertBookmarks(array){
         objectForTrail.body.text = "place holder";
         objectForTrail.body.url = bookmarksArray[i].url;
         objectForTrail.body.tags = "place, holder";
-        createTrail(objectForTrail, res)
+
+
+        // adding redundancy check for converting bookmarks
+        var check = redundancyCheck(bookmarksArray[i].url, res)
+
+        if (check.message == "no entry"){
+            console.log(check.message)
+            createTrail(objectForTrail, res)
+        } else {
+            console.log(check.message)
+            continue
+        }
+
     }
 }
-
 
 
 router.post('/api/create/trail', function(req,res){ createTrail(req,res) })
@@ -262,11 +273,11 @@ router.get('/api/delete/trail/:id', function(req, res){
 
 })
 
-// /api/check?url=URL+1,URL+2,URL+3
+// /api/check?url=URL
 // check to make sure a url and therefore and entry are not in our database
-router.get('/api/check',function(req,res){redundancyCheck(res, req)})
+router.get('/api/check',function(req,res){redundancyCheck(req, res)})
 
-function redundancyCheck(res, req){
+function redundancyCheck(req, res){
     var url = req.query.url
     console.log("url to check ---> " + url)
 
@@ -343,7 +354,7 @@ function depthFirst(tree, depth){
         }
         return jsonData  
     }
-
+// used exclusively in depth first search, but is essential
 function flatChildArrayCheck(treeElement, arrayToCheck){
     console.log("check that array of flat children for redundancies")
     if (arrayToCheck.length == 0){
