@@ -31,9 +31,9 @@ function convertBookmarks(array){
         }
         objectForTrail.body.trailTitle = bookmarksArray[i].title;
         objectForTrail.body.title = bookmarksArray[i].title;
-        objectForTrail.body.url = bookmarksArray[i].url;
         objectForTrail.body.text = "place holder";
-        objectForTrail.body.tags = ["place", "holder"];
+        objectForTrail.body.url = bookmarksArray[i].url;
+        objectForTrail.body.tags = "place, holder";
         createTrail(objectForTrail, res)
     }
 }
