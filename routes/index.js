@@ -35,7 +35,7 @@ function convertBookmarks(array){
         objectForTrail.body.url = bookmarksArray[i].url;
         objectForTrail.body.tags = "place, holder";
         // createTrail(objectForTrail, res)
-
+        console.log("check redundancy of ---> " + bookmarksArray[i].url)
         // adding redundancy check for converting bookmarks
         var check = redundancyCheck(bookmarksArray[i].url, res)
 
@@ -279,6 +279,8 @@ router.get('/api/delete/trail/:id', function(req, res){
 router.get('/api/check',function(req,res){redundancyCheck(req, res)})
 
 function redundancyCheck(req, res){
+    console.log("redundancyChecker")
+    console.log("req ---> "+req)
     var url = req.query.url
     console.log("url to check ---> " + url)
 
