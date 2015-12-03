@@ -352,7 +352,7 @@ function depthFirst(tree, depth){
             console.log("step " + i)
             if (flatChildArrayCheck(branch[i], flatChildrenArray) == "emptyarray" || branch !== undefined){
                 var currentDepth = newDepth + 1;
-                console.log("branch"+[i] +": "+ branch[i]);
+                // console.log("branch"+[i] +": "+ branch[i]);
                 depthFirst(branch[i], currentDepth)
             }
         }
