@@ -35,7 +35,9 @@ function convertBookmarks(array){
         // createTrail(objectForTrail, res)
         console.log("check redundancy of ---> " + bookmarksArray[i].url)
         // adding redundancy check for converting bookmarks
-        var shuvuhlong = { "url" : bookmarksArray[i].url}
+        var shuvuhlong = { "query":
+            {"url" : bookmarksArray[i].url}
+        }
         var check = redundancyCheck(shuvuhlong, res)
 
         if (check.message == "no entry"){
