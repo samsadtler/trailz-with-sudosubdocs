@@ -12,7 +12,7 @@ router.get('/add-trail', function(req,res){
 
 router.post('/api/add/bookmarks', function(req,res){
     var bookmarks = JSON.parse(req.body.tree);
-    console.log("parsing bookmarks -->"+ bookmarks);
+    console.log("parsing bookmarks -->");
     // console.log("flatChildrenArray " + depthFirst(bookmarks, 0))
     var jsonData = depthFirst(bookmarks, 0)
     // console.log ("jsonData ----> returned " + jsonData)
@@ -284,7 +284,7 @@ router.get('/api/check',function(req,res){redundancyCheck(req, res)})
 
 function redundancyCheck(req, res){
     console.log("redundancyChecker")
-    console.log("req ---> "+req)
+    console.log("req ---> " + req)
     var url = req.query.url
     // var url = req
     console.log("url to check ---> " + url)
