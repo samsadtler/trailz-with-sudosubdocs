@@ -16,12 +16,12 @@ router.post('/api/add/bookmarks', function(req,res){
     // console.log("flatChildrenArray " + depthFirst(bookmarks, 0))
     var jsonData = depthFirst(bookmarks, 0)
     // console.log ("jsonData ----> returned " + jsonData)
-    convertBookmarks(flatChildrenArray);
+    convertBookmarks(flatChildrenArray, res);
     return res.json(jsonData);
 
 })
 
-function convertBookmarks(array){
+function convertBookmarks(array, res){
     // console.log("convertBookmarks array -->" + array)
     var bookmarksArray = array
     var res = {message:"this fucked it up"}
