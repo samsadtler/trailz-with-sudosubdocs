@@ -24,7 +24,7 @@ router.post('/api/add/bookmarks', function(req,res){
 function convertBookmarks(array, res){
     // console.log("convertBookmarks array -->" + array)
     var bookmarksArray = array
-    var res = {message:"this fucked it up"}
+   
     for (var i = 0; i < bookmarksArray.length; i++ ){
         var objectForTrail = {body : {}}
         objectForTrail.body.trailTitle = bookmarksArray[i].title;
