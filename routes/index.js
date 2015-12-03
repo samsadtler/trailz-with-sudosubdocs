@@ -26,9 +26,7 @@ function convertBookmarks(array){
     var bookmarksArray = array
     var res = {message:"this fucked it up"}
     for (var i = 0; i < bookmarksArray.length; i++ ){
-        var objectForTrail = {
-                body : {}
-        }
+        var objectForTrail = {body : {}}
         objectForTrail.body.trailTitle = bookmarksArray[i].title;
         objectForTrail.body.title = bookmarksArray[i].title;
         objectForTrail.body.text = "place holder";
@@ -37,11 +35,8 @@ function convertBookmarks(array){
         // createTrail(objectForTrail, res)
         console.log("check redundancy of ---> " + bookmarksArray[i].url)
         // adding redundancy check for converting bookmarks
-        var req = {
-            body: {
-            }
-        }
-        var check = redundancyCheck(req.body.bookmarksArray[i].url, res)
+        var shuvuhlong = "?url=" + objectForTrail.body.url
+        var check = redundancyCheck(shuvuhlong, res)
 
         if (check.message == "no entry"){
             console.log(check.message)
