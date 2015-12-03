@@ -35,7 +35,7 @@ function convertBookmarks(array){
         // createTrail(objectForTrail, res)
         console.log("check redundancy of ---> " + bookmarksArray[i].url)
         // adding redundancy check for converting bookmarks
-        var shuvuhlong = "?url=" + objectForTrail.body.url
+        var shuvuhlong =  {"url":objectForTrail.body.url}
         var check = redundancyCheck(shuvuhlong, res)
 
         if (check.message == "no entry"){
@@ -50,6 +50,38 @@ function convertBookmarks(array){
     }
 }
 
+// /api/check?url=URL
+// check to make sure a url and therefore and entry are not in our database
+router.get('/api/check',function(req,res){redundancyCheck(req, res)})
+
+function redundancyCheck(req, res){
+    console.log("redundancyChecker")
+    console.log("req.query ---> " + JSON.stringify(req.query))
+    var url = req.query.url
+    // var url = req
+    console.log("url to check ---> " + url)
+
+    var searchQuery = {'steps.url': url}
+    Trail.find(searchQuery, function(err,data){
+        if(err){
+          var error = {status:'ERROR', message: 'I fucked up'};
+          return res.json(error);
+        }
+
+        if(data.length == 0){
+            var noData = {status:'OK', message: 'no entry', data: data};
+            return res.json(noData);
+        }
+        console.log("Whos data is this? --> " + data);
+        var hasData = {
+            status:'OK', 
+            message: 'heres the data entry',
+            data: data
+        }
+
+        return res.json(hasData);
+    })
+}
 
 router.post('/api/create/trail', function(req,res){ createTrail(req,res) })
 
@@ -273,38 +305,7 @@ router.get('/api/delete/trail/:id', function(req, res){
 
 })
 
-// /api/check?url=URL
-// check to make sure a url and therefore and entry are not in our database
-router.get('/api/check',function(req,res){redundancyCheck(req, res)})
 
-function redundancyCheck(req, res){
-    console.log("redundancyChecker")
-    console.log("req ---> " + req)
-    var url = req.query.url
-    // var url = req
-    console.log("url to check ---> " + url)
-
-    var searchQuery = {'steps.url': url}
-    Trail.find(searchQuery, function(err,data){
-        if(err){
-          var error = {status:'ERROR', message: 'I fucked up'};
-          return res.json(error);
-        }
-
-        if(data.length == 0){
-            var noData = {status:'OK', message: 'no entry', data: data};
-            return res.json(noData);
-        }
-        console.log("Whos data is this? --> " + JSON.stringify(data));
-        var hasData = {
-            status:'OK', 
-            message: 'heres the data entry',
-            data: data
-        }
-
-        return res.json(hasData);
-    })
-}
 // /api/search?tags=tag+1,tag+2,tag+3
 router.get('/api/search',function(req,res){
     console.log(req.query.tags);
