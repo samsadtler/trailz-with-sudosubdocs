@@ -281,7 +281,8 @@ router.get('/api/check',function(req,res){redundancyCheck(req, res)})
 function redundancyCheck(req, res){
     console.log("redundancyChecker")
     console.log("req ---> "+req)
-    var url = req.query.url
+    // var url = req.query.url
+    var url = req
     console.log("url to check ---> " + url)
 
     var searchQuery = {'steps.url': url}
