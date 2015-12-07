@@ -15,7 +15,7 @@ router.post('/api/add/bookmarks', function(req,res){
     console.log("parsing bookmarks -->");
     // console.log("flatChildrenArray " + depthFirst(bookmarks, 0))
     var jsonData = depthFirst(bookmarks, 0)
-    // console.log ("jsonData ----> returned " + jsonData)
+    console.log ("flatChildrenArray --> ", flatChildrenArray)
     convertBookmarks(flatChildrenArray, res);
     return res.json(jsonData);
 
@@ -23,34 +23,114 @@ router.post('/api/add/bookmarks', function(req,res){
 
 function convertBookmarks(array, res){
     // console.log("convertBookmarks array -->" + array)
-    var bookmarksArray = array
-   
-    for (var i = 0; i < bookmarksArray.length; i++ ){
+    var bookmarksArray = array;
+
+    var counter = 0;
+    var maxCounter = bookmarksArray.length-1;
+
+    parseUrl(0);
+
+    function parseUrl(counter){
+        console.log('we are in parseUrl and counter is ' + counter);
         var objectForTrail = {body : {}}
-        objectForTrail.body.trailTitle = bookmarksArray[i].title;
-        objectForTrail.body.title = bookmarksArray[i].title;
+        objectForTrail.body.trailTitle = bookmarksArray[counter].title;
+        objectForTrail.body.title = bookmarksArray[counter].title;
         objectForTrail.body.text = "place holder";
-        objectForTrail.body.url = bookmarksArray[i].url;
+        objectForTrail.body.url = bookmarksArray[counter].url;
         objectForTrail.body.tags = "place, holder";
-        // createTrail(objectForTrail, res)
-        console.log("check redundancy of ---> " + bookmarksArray[i].url)
-        // adding redundancy check for converting bookmarks
-        var shuvuhlong = { "query":
-            {"url" : bookmarksArray[i].url}
-        }
-        var check = redundancyCheck(shuvuhlong, res)
-
-        if (check.message == "no entry"){
-            console.log(check.message)
-            createTrail(objectForTrail, res)
-        } else {
-            console.log('movealong')
-            console.log(check.message)
-            continue
-        }
-
+        var searchQuery = bookmarksArray[counter].url;
+        checkDb(searchQuery, function(err,data){
+            if(err) console.log(err)
+            if(data) {
+                console.log(data);
+                console.log('need to create trail for ' + searchQuery);
+                createTrail2(objectForTrail,function(err,response){
+                    counter++;
+                    if(counter>=maxCounter) return;
+                    else parseUrl(counter);
+                });
+            }
+            else if(!data) {
+                console.log(data);
+                console.log('we already have ' + searchQuery + ' ....moving along....')
+                counter++;
+                if(counter>=maxCounter) return;
+                else parseUrl(counter);                
+            }
+        })
     }
+
+    function checkDb(search, callback){
+        var searchQuery = {'steps.url': search};
+        Trail.find(searchQuery, function(err,data){
+            console.log('the data in checkDb is ' + data);
+            if(err) return callback(err,null);
+            else if(!data || data==null) return callback(null,false);
+            else if(data.length==0) return callback(null,true);
+            else return callback(null,false)
+        })   
+    }
+
+    return res.json({'status':'OK'});
 }
+
+
+function createTrail2(req, callback){
+
+    console.log('Create a Trail');
+
+    console.log("What we're just trying to get data "+JSON.stringify(req.body));
+    console.log("where my trail title? --> " + req.body.trailTitle)
+
+    // pull out the information from the req.body
+    var trailTitle = req.body.trailTitle;
+    var title = req.body.title;
+    var text = req.body.text;
+    var tags = req.body.tags.split(","); // split string into array
+    console.log(tags);
+    for(var i=0;i<tags.length;i++) tags[i] = tags[i].replace(/^\s+|\s+$/g,'');
+    console.log(tags);
+    var url = req.body.url;
+
+    // hold all this data in an object
+    // this object should be structured the same way as your db model
+
+    var stepObj = {
+    title: title,
+    text: text,
+    tags: tags,
+    url: url,
+    };
+    var trailObj = {
+    title: trailTitle,
+    steps: [stepObj],
+    };
+
+    // now, let's save it to the database
+    // create a new step model instance, passing in the object we've created
+    var trail = new Trail(trailObj);
+
+    // now, save that step instance to the database
+    // mongoose method, see http://mongoosejs.com/docs/api.html#model_Model-save    
+    trail.save(function(err,data){
+        // if err saving, respond back with error
+        if (err){
+          var error = {status:'ERROR', message: 'Error saving step'};
+          console.log(error);
+        }
+
+        console.log('saved a new step!');
+        console.log(data);
+
+        // now return the json data of the new step
+        var jsonData = {
+          status: 'OK',
+          trail: data
+        }
+
+        return callback(null,data);
+    })
+};
 
 // /api/check?url=URL
 // check to make sure a url and therefore and entry are not in our database
@@ -58,30 +138,45 @@ router.get('/api/check',function(req,res){redundancyCheck(req, res)})
 
 function redundancyCheck(req, res){
     console.log("redundancyChecker")
-    console.log("req.query ---> " + JSON.stringify(req.query))
+    // console.log("req.query ---> " + JSON.stringify(req.query))
     var url = req.query.url
     // var url = req
-    console.log("url to check ---> " + url)
+    // console.log("url to check ---> " + url)
 
     var searchQuery = {'steps.url': url}
+
     Trail.find(searchQuery, function(err,data){
+        console.log('we are here 2!');
+        console.log('the data is ' + data);
+        console.log("res = "+res)
         if(err){
           var error = {status:'ERROR', message: 'I fucked up'};
-          return res.json(error);
+          if (res == undefined || res == null){
+            console.log("return error")
+             return error
+          } else return res.json(error);
         }
 
-        if(data.length == 0){
+        else if(data.length == 0){
             var noData = {status:'OK', message: 'no entry', data: data};
-            return res.json(noData);
+            if (res == undefined || res == null){
+                 console.log("return noData: " + JSON.stringify(noData))
+                return noData
+            } else return res.json(noData);
         }
-        console.log("Whos data is this? --> " + data);
-        var hasData = {
+        // console.log("Whos data is this? --> " + data);
+        
+        else {
+            var hasData = {
             status:'OK', 
             message: 'heres the data entry',
             data: data
         }
-
-        return res.json(hasData);
+        console.log("return hasData"+ JSON.stringify(hasData))
+        if (res == undefined || res == null){
+            return hasData
+        } else return res.json(hasData);
+    }
     })
 }
 
