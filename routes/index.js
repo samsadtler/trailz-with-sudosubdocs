@@ -95,7 +95,7 @@ function getTags(url, callback){
     alchemy.keywords(newURL+'?html=<required>'+outputMode, {}, function(err, response) {
         if (err) callback(err,null)
         var keywords = response.keywords;
-        if (keywords == undefined) return callback(null,"place-holder,for,your,bum,link")
+        if (keywords == undefined || keywords.length == 0) return callback(null,"place-holder,for,your,bum,link")
         console.log("keywords!",keywords)
         for(var i = 0; i < keywords.length; i++){
             keywordlist.push(keywords[i].text);
