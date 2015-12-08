@@ -9,27 +9,7 @@ var flatChildrenArray = [];
 var tags = [];
 var AlchemyAPI = require('alchemy-api');
 var alchemy = new AlchemyAPI('909d2935c04ba8e5001c01e3c1c183d64e0de728');
-var outputMode = '&outputMode=json';
-var url = 'https://www.npmjs.com/package/alchemy-api'
-alchemy.keywords(url+'?html=<required>'+outputMode, {}, function(err, response) {
-    if (err) throw err;
 
-      // See http://www.alchemyapi.com/api/keyword/htmlc.html for format of returned object
-    var keywords = response.keywords;
-    var keywordlist = [];
-    // console.log("keywords!",keywords)
-    for(var i = 0; i < keywords.length; i++){
-              keywordlist.push(keywords[i].text);
-          }
-          for (var i=0;i<keywordlist.length;i++){
-              if(i<4){
-                  tags = tags + keywordlist[i]+",";
-              } else { tags = tags + keywordlist[i]; }
-
-    }
-    console.log("tags to be searched in db --> ",tags)
-      // Do something with data
-});
 
 router.get('/add-trail', function(req,res){
   res.render('add-trail.html');
@@ -46,43 +26,6 @@ router.post('/api/add/bookmarks', function(req,res){
     return res.json(jsonData);
 
 })
-// function testFunction(){
-//     console.log("in testFunction")
-//     var postData = querystring.stringify({
-//       'msg' : 'Hello World!'
-//     });
-
-//     var options = {
-//       hostname: 'www.google.com',
-//       port: 80,
-//       path: '/upload',
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/x-www-form-urlencoded',
-//         'Content-Length': postData.length
-//       }
-//     };
-
-//     var req = http.request(options, function(res) {
-//       console.log('STATUS: ' + res.statusCode);
-//       console.log('HEADERS: ' + JSON.stringify(res.headers));
-//       res.setEncoding('utf8');
-//       res.on('data', function (chunk) {
-//         console.log('BODY: ' + chunk);
-//       });
-//       res.on('end', function() {
-//         console.log('No more data in response.')
-//       })
-//     });
-
-//     req.on('error', function(e) {
-//       console.log('problem with request: ' + e.message);
-//     });
-
-//     // write data to request body
-//     req.write(postData);
-//     req.end();
-// }
 
 function convertBookmarks(array, res){
     // console.log("convertBookmarks array -->" + array)
@@ -107,15 +50,17 @@ function convertBookmarks(array, res){
             if(data) {
                 console.log(data);
                 console.log('need to create trail for ' + searchQuery);
-                // getTags(searchQuery, function(err,response){
+                getTags(searchQuery, function(err,response){
                     objectForTrail.body.tags = response
-                    console.log("response from alchemy", response)
-                    createTrail2(objectForTrail,function(err,response){
-                        counter++;
-                        if(counter>=maxCounter) return;
-                        else parseUrl(counter);
-                    });
-                // })
+                    if (response){
+                        console.log("response from alchemy", response)
+                        createTrail2(objectForTrail,function(err,response){
+                            counter++;
+                            if(counter>=maxCounter) return;
+                            else parseUrl(counter);
+                        });
+                    } else console.log('error in alchemy call')
+                })
             }
             else if(!data) {
                 console.log(data);
@@ -143,31 +88,30 @@ function convertBookmarks(array, res){
 
 function getTags(url, callback){
     var newURL = url
-    var keywordlist
-    var tags
-    jQuery.ajax({
-        url : 'http://gateway-a.watsonplatform.net/calls/url/URLGetRankedKeywords?apikey=909d2935c04ba8e5001c01e3c1c183d64e0de728&url='+ newURL +'&outputMode=json',
-        dataType : 'json',
-        success : function(response){
-            for(var i = 0; i < response.keywords.length; i++){
-                keywordlist.push(response.keywords[i].text);
-            }
-            for (var i=0;i<keywordlist.length;i++){
-                if(i<4){
-                    tags = tags + keywordlist[i]+",";
-                } else { tags = tags + keywordlist[i]; }
-
-            }
-            console.log("tags to be searched in db --> ",tags)
-            return callback(null,tags)
-        },
-        error : function(err){
-            // do error checking
-            console.log("something went wrong with alchemy");
-            console.error(err);
-            return callback(err,null)
-        } 
+    var keywordlist = [];
+    var tags;
+    var outputMode = '&outputMode=json';
+    console.log('get tags from alchemy')
+    alchemy.keywords(newURL+'?html=<required>'+outputMode, {}, function(err, response) {
+        if (err) callback(err,null)
+        var keywords = response.keywords;
+        if (keywords == undefined) return callback(null,"place-holder,for,your,bum,link")
+        console.log("keywords!",keywords)
+        for(var i = 0; i < keywords.length; i++){
+            keywordlist.push(keywords[i].text);
+        }
+        for (var i=0;i<keywordlist.length;i++){
+            // only add 4 tags?
+            // I think this is fucked but whatever
+            if(i< keywordlist.length-2){
+                tags = tags + keywordlist[i]+",";
+            } else {tags = tags + keywordlist[i];}
+        }
+        console.log("tags to be searched in db --> ",tags)
+        callback(null,tags)
+          // Do something with data
     });
+      
 }
 
 function createTrail2(req, callback){
@@ -230,7 +174,8 @@ function createTrail2(req, callback){
 // /api/check?url=URL
 // check to make sure a url and therefore and entry are not in our database
 router.get('/api/check',function(req,res){redundancyCheck(req, res)})
-
+// no longer using this on the server side for searches
+// call exists for redundancy checking from front end
 function redundancyCheck(req, res){
     console.log("redundancyChecker")
     // console.log("req.query ---> " + JSON.stringify(req.query))
