@@ -6,16 +6,29 @@ var geocoder = require('geocoder'); // geocoder library
 var Trail = require("../models/model.js");
 var flatChildrenArray = [];
 
+var tags = [];
 var AlchemyAPI = require('alchemy-api');
 var alchemy = new AlchemyAPI('909d2935c04ba8e5001c01e3c1c183d64e0de728');
-alchemy.keywords('https://www.npmjs.com/package/alchemy-api', {}, function(err, response) {
-  if (err) throw err;
+var outputMode = '&outputMode=json';
+var url = 'https://www.npmjs.com/package/alchemy-api'
+alchemy.keywords(url+'?html=<required>'+outputMode, {}, function(err, response) {
+    if (err) throw err;
 
-  // See http://www.alchemyapi.com/api/keyword/htmlc.html for format of returned object
-  var keywords = response.keywords;
-  console.log("keywords!",keywords)
+      // See http://www.alchemyapi.com/api/keyword/htmlc.html for format of returned object
+    var keywords = response.keywords;
+    var keywordlist = [];
+    // console.log("keywords!",keywords)
+    for(var i = 0; i < keywords.length; i++){
+              keywordlist.push(keywords[i].text);
+          }
+          for (var i=0;i<keywordlist.length;i++){
+              if(i<4){
+                  tags = tags + keywordlist[i]+",";
+              } else { tags = tags + keywordlist[i]; }
 
-  // Do something with data
+    }
+    console.log("tags to be searched in db --> ",tags)
+      // Do something with data
 });
 
 router.get('/add-trail', function(req,res){
