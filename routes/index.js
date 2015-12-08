@@ -5,7 +5,6 @@ var geocoder = require('geocoder'); // geocoder library
 // our db model
 var Trail = require("../models/model.js");
 var flatChildrenArray = [];
-
 var tags = [];
 var AlchemyAPI = require('alchemy-api');
 var alchemy = new AlchemyAPI('909d2935c04ba8e5001c01e3c1c183d64e0de728');
@@ -89,7 +88,7 @@ function convertBookmarks(array, res){
 function getTags(url, callback){
     var newURL = url
     var keywordlist = [];
-    var tags;
+    var aTags;
     var outputMode = '&outputMode=json';
     console.log('get tags from alchemy')
     alchemy.keywords(newURL+'?html=<required>'+outputMode, {}, function(err, response) {
@@ -101,14 +100,12 @@ function getTags(url, callback){
             keywordlist.push(keywords[i].text);
         }
         for (var i=0;i<keywordlist.length;i++){
-            // only add 4 tags?
-            // I think this is fucked but whatever
             if(i< keywordlist.length-2){
-                tags = tags + keywordlist[i]+",";
-            } else {tags = tags + keywordlist[i];}
+                aTags = aTags + keywordlist[i]+",";
+            } else {aTags = aTags + keywordlist[i];}
         }
-        console.log("tags to be searched in db --> ",tags)
-        callback(null,tags)
+        console.log("tags to be searched in db --> ",aTags)
+        callback(null,aTags)
           // Do something with data
     });
       
