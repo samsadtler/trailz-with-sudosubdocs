@@ -88,7 +88,7 @@ function convertBookmarks(array, res){
 function getTags(url, callback){
     var newURL = url
     var keywordlist = [];
-    var aTags;
+    var aTags = "";
     var outputMode = '&outputMode=json';
     console.log('get tags from alchemy')
     alchemy.keywords(newURL+'?html=<required>'+outputMode, {}, function(err, response) {
@@ -104,7 +104,7 @@ function getTags(url, callback){
                 aTags = aTags + keywordlist[i]+",";
             } else {aTags = aTags + keywordlist[i];}
         }
-        console.log("tags to be searched in db --> ",aTags)
+        console.log("tags to be searched in db --> ", aTags)
         callback(null,aTags)
           // Do something with data
     });
