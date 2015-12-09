@@ -15,6 +15,10 @@ router.get('/add-trail', function(req,res){
 })
 
 router.post('/api/add/bookmarks', function(req,res){
+    // seeing if this solves the multi bookmarks problem.
+    // should at least take care of the repeated db check.
+    tags = [];
+    flatChildrenArray = [];
     var bookmarks = JSON.parse(req.body.tree);
     console.log("parsing bookmarks -->");
     // console.log("flatChildrenArray " + depthFirst(bookmarks, 0))
